@@ -1,15 +1,11 @@
  <%@ include file="/header.jsp" %>
- <%@page import="java.sql.Connection"%>
-<%@page import="java.sql.Statement"%>
-<%@page import="java.sql.SQLException"%>
 
-<%@page import="java.sql.ResultSetMetaData"%>
-<%@page import="java.sql.ResultSet"%>
-<%@ page import="java.util.*,java.io.*"%>
+ <%@ page import="java.util.*,java.io.*"%>
 <%@ page import="org.cysecurity.cspf.jvl.model.DBConnect"%>
+ <%@ page import="java.sql.*" %>
 
 
-<%
+ <%
 if(session.getAttribute("isLoggedIn")!=null)
 {
     %>
@@ -40,7 +36,18 @@ if(session.getAttribute("isLoggedIn")!=null)
         if(!cardno.equals("") && !cvv.equals("") && !expirydate.equals(""))
         {
          Statement stmt = con.createStatement();
-         stmt.executeUpdate("INSERT into cards(id,cardno, cvv,expirydate) values ('"+id+"','"+cardno+"','"+cvv+"','"+expirydate+"')");
+         //stmt.executeUpdate("INSERT into cards(id,cardno, cvv,expirydate) values ('"+id+"','"+cardno+"','"+cvv+"','"+expirydate+"')");
+            String sql = "INSERT into cards(id,cardno, cvv,expirydate) values (?,?,?,?);
+            try (Connection conn = DriverManager.getConnection(url, user, password);
+                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setString(1, id);
+                pstmt.setString(2, cardno);
+                pstmt.setString(3, cvv);
+                pstmt.setString(4, expirydate);
+                pstmt.executeUpdate();
+            } catch (SQLException e) {
+                // Handle any potential exceptions
+            }
          out.print("<b style='color:green'> * Card details added *</b>");   
         }
         else
