@@ -8,9 +8,7 @@ package org.cysecurity.cspf.jvl.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -44,16 +42,30 @@ public class UsernameCheck extends HttpServlet {
                 if(con!=null && !con.isClosed())
                 {
                     ResultSet rs=null;
-                    Statement stmt = con.createStatement();  
-                    rs=stmt.executeQuery("select * from users where username='"+user+"'");
-                    if (rs.next()) 
-                    {  
-                     json.put("available", "1"); 
-                    }  
-                    else
-                    {  
-                      json.put("available", new Integer(0));  
-                    }  
+                    String url = null;
+                    String password = null;
+
+                    try {
+                        Statement stmt = con.createStatement();
+                        String sql = "select * from useres where usersname='?'";
+                        Connection conn = DriverManager.getConnection(url, user, password);
+                        PreparedStatement pstmt = conn.prepareStatement(sql);
+                        pstmt.setString(1, user);
+                        pstmt.executeUpdate();
+
+                        //                    rs=stmt.executeQuery("select * from users where username='"+user+"'");
+                        if (rs.next()) {
+                            json.put("available", "1");
+                        } else {
+                            json.put("available", new Integer(0));
+                        }
+                        out.print(json);
+                    }
+                    catch(SQLException e)
+                    {
+                        out.print(e);
+                    }
+                }
                 }
                 out.print(json);
         } 
