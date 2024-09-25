@@ -47,6 +47,7 @@ public class UsernameCheck extends HttpServlet {
                     String password = null;
 
                     try {
+
                         Statement stmt = con.createStatement();
                         String sql = "select * from useres where usersname='?'";
                         Connection conn = DriverManager.getConnection(url, user, password);
