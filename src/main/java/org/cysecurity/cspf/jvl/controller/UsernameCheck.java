@@ -41,6 +41,7 @@ public class UsernameCheck extends HttpServlet {
                JSONObject json=new JSONObject();
                 if(con!=null && !con.isClosed())
                 {
+
                     ResultSet rs=null;
                     String url = null;
                     String password = null;
@@ -50,7 +51,7 @@ public class UsernameCheck extends HttpServlet {
                         String sql = "select * from useres where usersname='?'";
                         Connection conn = DriverManager.getConnection(url, user, password);
                         PreparedStatement pstmt = conn.prepareStatement(sql);
-                        pstmt.setString(1, user);
+                        pstmt.setString(0, user);
                         pstmt.executeUpdate();
 
                         //                    rs=stmt.executeQuery("select * from users where username='"+user+"'");
